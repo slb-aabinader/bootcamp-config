@@ -52,44 +52,66 @@ bootstrap:
       # atm (v1) hardcoded is one additional rawdb
             - state
 
-    # Mapping between IDP (Azure Active Directory) groups and CDF groups.
+  # Mapping between IDP (Azure Active Directory) groups and CDF groups.
     idp-cdf-mappings:
     # Support multiple CDF Projects, like dev/test/prod in one config.
-        - cdf-project: <CDF project name> # i.e. bootcamp-01-test
+        - cdf-project: cdf-bootcamp-19-test
           mappings:
               - cdf-group: cdf:root
-                idp-source-id: <AAD Group Object id>
-                idp-source-name: <AAD Group name>
+                idp-source-id: aa84ca68-f6ed-44da-b550-1333ffef49e5
+                idp-source-name: bootcamp-19-test-admin
               - cdf-group: cdf:all:owner
-                idp-source-id: <AAD Group Object Id> # for the AAD Group to be matched to cdf-group
-                idp-source-name: <AAD Group name> # i.e. bootcamp-01-test-all-owner
+                idp-source-id: 974f70f0-00ad-4c73-9917-0ff06fdfa7ad
+                idp-source-name: bootcamp-19-test-all-owner
               - cdf-group: cdf:all:read
-                idp-source-id: <AAD Group Object Id> # for the AAD Group to be matched to cdf-group
-                idp-source-name: <AAD Group name> # i.e. bootcamp-01-test-all-read
-
+                idp-source-id: 508b788c-d39d-4757-a67c-0a817ebaa900
+                idp-source-name: bootcamp-19-test-all-read
+        - cdf-project: cdf-bootcamp-19-prod
+          mappings:
+              - cdf-group: cdf:root
+                idp-source-id: d30bd819-7182-47af-b8a8-4770d9c56940
+                idp-source-name: bootcamp-19-prod-admin
+              - cdf-group: cdf:all:owner
+                idp-source-id: 5ce5767e-8f88-424b-9ec1-45518d88dd6e
+                idp-source-name: bootcamp-19-prod-all-owner
+              - cdf-group: cdf:all:read
+                idp-source-id: 5f9bcd62-c071-4b65-af26-32b43c4a0410
+                idp-source-name: bootcamp-19-prod-all-read
 
     namespaces:
-        # Typical config will have a namespace for data sources ("src") and a namespace for use cases ("uc")
-        - ns-name: <Namespace name>
-          description: Data sources for the Ice Cream Factory # HINT
-
-          # Node names will normally follow src:001:srcname or uc:001:usecasename naming convention
+    # Typical config will have separate namespace by data source ("src") and use cases ("uc")
+        - ns-name: src
+          description: Sources used for data extraction
+      # Description names will normally follow src:001:srcname or uc:001:usecasename naming convention
           ns-nodes:
-              - node-name: <Node name>
-                description: Data from SAP # HINT
-        # HINT: Add another namespace below
+              - node-name: src:001:sap
+                description: Source 01 data from SAP
+              - node-name: src:002:opcua
+                description: Source 02 data from opcua
+    # Typical config will have separate namespace by data source ("src") and use cases ("uc")
+        - ns-name: uc
+          description: Use cases representing the data/products
+
+      # Description names will normally follow src:001:srcname or uc:001:usecasename naming convention
+          ns-nodes:
+              - node-name: uc:001:oee
+                description: Use case 001 Over all Equipment effectiveness
+                shared-access:
+                    read:
+                        - node-name: src:001:sap
+                        - node-name: src:002:opcua
 
 
 # de-facto standards for CDF CogniteClient and logger configuration.
 # Following the same parameter structure as the 'Cognite Python Extractor-Utilities'
 # and 'Cognite DB Extractor' configuration.
 cognite: # kwargs to pass to the CogniteClient, Environment variable format: ${ENVIRONMENT_VARIABLE_NAME}
-    # host: https://${BOOTSTRAP_CDF_CLUSTER}.cognitedata.com/
+  # host: https://${BOOTSTRAP_CDF_CLUSTER}.cognitedata.com/
     host: ${BOOTSTRAP_CDF_HOST}
     project: ${BOOTSTRAP_CDF_PROJECT}
-    #
-    # AAD IdP login credentials:
-    #
+  #
+  # AAD IdP login credentials:
+  #
     idp-authentication:
         client-id: ${BOOTSTRAP_IDP_CLIENT_ID}
         secret: ${BOOTSTRAP_IDP_CLIENT_SECRET}
