@@ -9,6 +9,9 @@ destination:
 ignoreNullFields: true
 shared: true
 action: update
+schedule:
+    interval: 0 * * * *
+    isPaused: false
 authentication:
     clientId: ${COGNITE_CLIENT_ID}
     clientSecret: ${COGNITE_CLIENT_SECRET}
